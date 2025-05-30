@@ -7,45 +7,61 @@ class Interface:
         self.db = Database()
         self.root = root
         self.root.title("Sistema Escolar Ceub")
+        self.root.configure(bg="#1C2526")
         self.setup_ui()
         self.carregar_dados()
 
     def setup_ui(self):
-        # Aluno Section
-        tk.Label(self.root, text="Nome:").grid(row=0, column=0)
-        self.entry_nome = tk.Entry(self.root)
-        self.entry_nome.grid(row=0, column=1)
+        bg_color = "#1C2526"  
+        fg_color = "#D3D3D3"  
+        entry_bg = "#2F3E46" 
+        button_bg = "#354F52"  
+        button_fg = "#FFFFFF"  
 
-        tk.Label(self.root, text="Idade:").grid(row=1, column=0)
-        self.entry_idade = tk.Entry(self.root)
-        self.entry_idade.grid(row=1, column=1)
 
-        tk.Button(self.root, text="Inserir Aluno", command=self.inserir_aluno).grid(row=2, column=0, columnspan=2)
+        tk.Label(self.root, text="Nome:", bg=bg_color, fg=fg_color).grid(row=0, column=0, padx=5, pady=5)
+        self.entry_nome = tk.Entry(self.root, bg=entry_bg, fg=fg_color, insertbackground=fg_color)
+        self.entry_nome.grid(row=0, column=1, padx=5, pady=5)
 
-        self.tree_alunos = ttk.Treeview(self.root, columns=("ID", "Nome", "Idade"), show="headings")
+        tk.Label(self.root, text="Idade:", bg=bg_color, fg=fg_color).grid(row=1, column=0, padx=5, pady=5)
+        self.entry_idade = tk.Entry(self.root, bg=entry_bg, fg=fg_color, insertbackground=fg_color)
+        self.entry_idade.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Button(self.root, text="Inserir Aluno", command=self.inserir_aluno, bg=button_bg, fg=button_fg).grid(row=2, column=0, columnspan=2, pady=10)
+
+        style = ttk.Style()
+        style.configure("Treeview",
+                        background=entry_bg,
+                        foreground=fg_color,
+                        fieldbackground=entry_bg,
+                        rowheight=25)
+        style.configure("Treeview.Heading",
+                        background=button_bg,
+                        foreground=fg_color)
+
+        self.tree_alunos = ttk.Treeview(self.root, columns=("ID", "Nome", "Idade"), show="headings", style="Treeview")
         for col in ("ID", "Nome", "Idade"):
             self.tree_alunos.heading(col, text=col)
-        self.tree_alunos.grid(row=3, column=0, columnspan=2)
+        self.tree_alunos.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 
-        tk.Button(self.root, text="Deletar Aluno", command=self.deletar_aluno).grid(row=4, column=0, columnspan=2)
+        tk.Button(self.root, text="Deletar Aluno", command=self.deletar_aluno, bg=button_bg, fg=button_fg).grid(row=4, column=0, columnspan=2, pady=10)
 
-        # Matricula Section
-        tk.Label(self.root, text="ID Aluno:").grid(row=0, column=2)
-        self.entry_aluno_id = tk.Entry(self.root)
-        self.entry_aluno_id.grid(row=0, column=3)
+        tk.Label(self.root, text="ID Aluno:", bg=bg_color, fg=fg_color).grid(row=0, column=2, padx=5, pady=5)
+        self.entry_aluno_id = tk.Entry(self.root, bg=entry_bg, fg=fg_color, insertbackground=fg_color)
+        self.entry_aluno_id.grid(row=0, column=3, padx=5, pady=5)
 
-        tk.Label(self.root, text="Curso:").grid(row=1, column=2)
-        self.entry_curso = tk.Entry(self.root)
-        self.entry_curso.grid(row=1, column=3)
+        tk.Label(self.root, text="Curso:", bg=bg_color, fg=fg_color).grid(row=1, column=2, padx=5, pady=5)
+        self.entry_curso = tk.Entry(self.root, bg=entry_bg, fg=fg_color, insertbackground=fg_color)
+        self.entry_curso.grid(row=1, column=3, padx=5, pady=5)
 
-        tk.Button(self.root, text="Inserir Matrícula", command=self.inserir_matricula).grid(row=2, column=2, columnspan=2)
+        tk.Button(self.root, text="Inserir Matrícula", command=self.inserir_matricula, bg=button_bg, fg=button_fg).grid(row=2, column=2, columnspan=2, pady=10)
 
-        self.tree_matriculas = ttk.Treeview(self.root, columns=("ID", "Aluno", "Curso"), show="headings")
+        self.tree_matriculas = ttk.Treeview(self.root, columns=("ID", "Aluno", "Curso"), show="headings", style="Treeview")
         for col in ("ID", "Aluno", "Curso"):
             self.tree_matriculas.heading(col, text=col)
-        self.tree_matriculas.grid(row=3, column=2, columnspan=2)
+        self.tree_matriculas.grid(row=3, column=2, columnspan=2, padx=5, pady=5)
 
-        tk.Button(self.root, text="Deletar Matrícula", command=self.deletar_matricula).grid(row=4, column=2, columnspan=2)
+        tk.Button(self.root, text="Deletar Matrícula", command=self.deletar_matricula, bg=button_bg, fg=button_fg).grid(row=4, column=2, columnspan=2, pady=10)
 
     def inserir_aluno(self):
         try:
@@ -74,13 +90,11 @@ class Interface:
             messagebox.showerror("Erro", "ID do aluno deve ser um número inteiro")
 
     def carregar_dados(self):
-        # Load Alunos
         for row in self.tree_alunos.get_children():
             self.tree_alunos.delete(row)
         for row in self.db.carregar_alunos():
             self.tree_alunos.insert("", "end", values=row)
 
-        # Load Matriculas
         for row in self.tree_matriculas.get_children():
             self.tree_matriculas.delete(row)
         for row in self.db.carregar_matriculas():
